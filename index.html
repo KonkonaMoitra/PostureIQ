@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+{% block title %}PostureIQ — AI Interview Posture Analyser{% endblock %}
+
+{% block content %}
+<!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container-pro">
+    <div class="row align-items-center g-5">
+
+      <!-- Left: copy -->
+      <div class="col-lg-6">
+        <div class="hero-eyebrow">AI-Powered · Real-Time</div>
+        <h1>
+          Master Your<br>
+          <span class="highlight">Interview Posture</span>
+        </h1>
+        <p class="lead">
+          PostureIQ uses computer vision and geometric analysis to assess your
+          posture in real time — so you project confidence before your next
+          big interview.
+        </p>
+
+        <ul class="feature-list">
+          <li>Real-Time Posture Analysis</li>
+          <li>Geometric Angle Computation</li>
+          <li>Professional Posture Score (0–100)</li>
+          <li>Interview-Specific Feedback Engine</li>
+          <li>Posture History & Analytics Dashboard</li>
+          <li>Improvement Tracking Over Time</li>
+          <li>Secure & Private</li>
+          
+        </ul>
+
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="{{ url_for('register') }}" class="btn-primary-pro">
+            Get Started Free
+          </a>
+          <a href="{{ url_for('login') }}" class="btn-ghost">
+            Sign In
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: visual card -->
+      <div class="col-lg-6">
+        <div class="card-pro" style="max-width:400px; margin:auto;">
+          <div class="d-flex justify-between items-center mb-3">
+            <span class="card-label">Sample Analysis</span>
+            <span class="status-badge excellent">Excellent</span>
+          </div>
+
+          <!-- Simulated score ring -->
+          <div class="d-flex justify-center mb-3">
+            <div class="score-ring">
+              <svg viewBox="0 0 120 120" width="120" height="120">
+                <circle class="ring-bg"   cx="60" cy="60" r="50" stroke-width="10"/>
+                <circle class="ring-fill" cx="60" cy="60" r="50" stroke-width="10"
+                  stroke="#10b981"
+                  stroke-dasharray="314.16"
+                  stroke-dashoffset="47.12"/>
+              </svg>
+              <div class="ring-label">
+                <span class="ring-number" style="color:#10b981">85</span>
+                <span class="ring-text">Score</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulated angle grid -->
+          <div class="angle-grid">
+            <div class="angle-item">
+              <div class="angle-val">3.2°</div>
+              <div class="angle-label">Shoulder Slope</div>
+            </div>
+            <div class="angle-item">
+              <div class="angle-val">8.1°</div>
+              <div class="angle-label">Neck Tilt</div>
+            </div>
+            <div class="angle-item">
+              <div class="angle-val">2.4°</div>
+              <div class="angle-label">Head Tilt</div>
+            </div>
+            <div class="angle-item">
+              <div class="angle-val">5.7°</div>
+              <div class="angle-label">Spine Angle</div>
+            </div>
+          </div>
+
+          <div class="feedback-item mt-2">
+            <div class="feedback-icon">✅</div>
+            <span>Outstanding posture! You project confidence and professionalism.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── How it Works ──────────────────────────────────────────────────────── -->
+<section class="section" style="background:var(--bg-secondary); border-top:1px solid var(--border);">
+  <div class="container-pro">
+    <h2 class="text-center mb-2" style="font-size:1.5rem;">How PostureIQ Works</h2>
+    <p class="text-center text-muted mb-4" style="font-size:0.9rem;">Three simple steps to interview-ready posture</p>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <div style="font-size:2rem; margin-bottom:1rem;">📸</div>
+          <h4 style="margin-bottom:0.5rem;">1. Enable Camera</h4>
+          <p style="font-size:0.85rem;">Allow webcam access. Our system uses only your live feed — no data is stored externally.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <div style="font-size:2rem; margin-bottom:1rem;">🤖</div>
+          <h4 style="margin-bottom:0.5rem;">2. AI Analyses You</h4>
+          <p style="font-size:0.85rem;">MediaPipe detects 33 body landmarks. We compute real geometric angles for shoulders, neck, head, and spine.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <div style="font-size:2rem; margin-bottom:1rem;">📊</div>
+          <h4 style="margin-bottom:0.5rem;">3. Track Progress</h4>
+          <p style="font-size:0.85rem;">Every session is saved. Your dashboard shows improvement over time with charts and session history.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--core features descriptiom-->
+<section class="section">
+  <div class="container-pro">
+    <h2 class="text-center mb-2" style="font-size:1.6rem;">
+      What Makes PostureIQ Different
+    </h2>
+    <p class="text-center text-muted mb-5" style="font-size:0.95rem;">
+      Designed specifically for interview confidence — powered by real computer vision.
+    </p>
+    <!--Intelligent Analysis-->
+        <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>🧠 Real-Time Posture Analysis</h4>
+          <p>
+            Uses live webcam input to evaluate posture instantly.
+            No image uploads. No simulated data.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>📐 Geometric Angle Computation</h4>
+          <p>
+            Calculates shoulder slope, neck tilt, head alignment,
+            and spine angle using 33-point MediaPipe landmark detection.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>📊 Professional Posture Score</h4>
+          <p>
+            Generates a precise 0–100 posture score based on
+            real angle thresholds used in ergonomic assessment.
+          </p>
+        </div>
+      </div>
+
+    </div>
+    <!--insightful tracking & analytics-->
+        <div class="row g-4 mt-4">
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>📈 Progress Tracking</h4>
+          <p>
+            Every session is securely stored. Track improvement
+            over time with trend analysis and performance history.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>📉 Interview Performance Dashboard</h4>
+          <p>
+            Visualize average posture score, session count,
+            and improvement percentage through interactive charts.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>🎯 Confidence Projection Indicator</h4>
+          <p>
+            Evaluates symmetry and upright posture to estimate
+            how confidently you appear during interviews.
+          </p>
+        </div>
+      </div>
+
+    </div>
+    <!--professional interview mode-->
+        <div class="row g-4 mt-4">
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>⏱ Mock Interview Mode</h4>
+          <p>
+            Timed posture evaluation sessions designed to simulate
+            real interview conditions.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>📄 Downloadable Posture Reports</h4>
+          <p>
+            Generate session summaries including angle breakdown,
+            posture score, and improvement suggestions.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>🖥 Live Score Overlay</h4>
+          <p>
+            Displays posture score and correction suggestions
+            directly on the webcam feed in real time.
+          </p>
+        </div>
+      </div>
+
+    </div>
+        <!--secure and private-->
+        <div class="row g-4 mt-4">
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>🔐 Secure Authentication</h4>
+          <p>
+            Encrypted login system with hashed passwords and
+            protected session management.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>🛡 Privacy-Focused Processing</h4>
+          <p>
+            Posture analysis runs locally on your server.
+            No external image storage or third-party tracking.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card-pro h-100">
+          <h4>⚡ Optimized Performance</h4>
+          <p>
+            Compressed frame processing and efficient landmark
+            detection for smooth real-time analysis.
+          </p>
+        </div>
+      </div>
+
+    </div>
+      </div>
+</section>
+<!-- ── Posture Tips ───────────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container-pro">
+    <h2 style="font-size:1.4rem; margin-bottom:1.5rem;">Professional Posture Tips</h2>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">🪑</div>
+        <h4>Sit Back in Your Chair</h4>
+        <p>Use the full depth of your seat. Your lower back should contact the backrest.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">👁️</div>
+        <h4>Eye-Level Camera</h4>
+        <p>Position your webcam at eye level to naturally keep your chin parallel to the floor.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">💪</div>
+        <h4>Relax Your Shoulders</h4>
+        <p>Roll your shoulders back and down. Avoid hunching — it signals low confidence.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📐</div>
+        <h4>The 90-90-90 Rule</h4>
+        <p>Hips, knees, and ankles should each be at roughly 90° for optimal seated posture.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

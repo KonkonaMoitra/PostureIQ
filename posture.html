@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% block title %}Analyse Posture — PostureIQ{% endblock %}
+
+{% block content %}
+<div class="container-pro section">
+
+  <div class="mb-4">
+    <p class="hero-eyebrow" style="margin-bottom:0.4rem;">Live Analysis</p>
+    <h1 style="font-size:1.75rem;">Posture Detection</h1>
+    <p style="font-size:0.88rem; color:var(--text-muted);">
+      Position yourself in frame, then click Analyse. Keep your upper body visible.
+    </p>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ── Webcam Column ────────────────────────────────────────────────── -->
+    <div class="col-lg-7">
+
+      <!-- Webcam feed -->
+      <div id="webcam-wrapper" class="webcam-wrapper">
+        <video id="webcam-video" autoplay muted playsinline></video>
+
+        <!-- Overlay -->
+        <div class="webcam-overlay">
+          <div class="overlay-top">
+            <div class="overlay-pill">
+              <span class="live-dot"></span>
+              <span id="cam-status">INITIALISING</span>
+            </div>
+            <div class="overlay-pill" id="overlay-score" style="display:none;"></div>
+          </div>
+          <div class="overlay-bottom">
+            <div class="overlay-pill" style="font-size:0.65rem;">
+              Keep upper body centred in frame
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Camera error -->
+      <div id="cam-error" class="mt-2"
+           style="display:none; font-size:0.85rem; color:var(--danger); background:rgba(239,68,68,0.08);
+                  border:1px solid rgba(239,68,68,0.2); border-radius:8px; padding:0.75rem 1rem;">
+      </div>
+
+      <!-- Analyse button -->
+      <div class="d-flex gap-2 mt-3 flex-wrap">
+        <button id="analyse-btn" class="btn-primary-pro" onclick="analysePosture()">
+          <span id="btn-spinner" class="spinner" style="display:none;"></span>
+          <span id="btn-text">Analyse Posture</span>
+        </button>
+        <a href="{{ url_for('dashboard') }}" class="btn-ghost">
+          View Dashboard
+        </a>
+      </div>
+<!-- ── Mock Interview Mode ─────────────────────────────────────────────── -->
+<div class="card-pro mt-3">
+  <div class="card-label mb-2">⏱ Mock Interview Mode</div>
+  <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1rem;">
+    Runs a 60-second timed session, sampling your posture every 10 seconds.
+    Your average score is saved as a single session record.
+  </p>
+
+  <div class="d-flex gap-2 items-center flex-wrap">
+    <button id="mock-btn" class="btn-ghost" onclick="startMockSession()">
+      ▶ Start Mock Session
+    </button>
+    <span id="mock-timer"
+          style="font-family:var(--font-mono); font-size:1.1rem;
+                 color:var(--accent-bright); display:none;">
+      00:60
+    </span>
+  </div>
+
+  <div id="mock-result" class="mt-2"
+       style="display:none; font-size:0.85rem; color:var(--success);">
+  </div>
+</div>
+      <!-- Error message -->
+      <div id="error-msg" class="mt-2"
+           style="display:none; font-size:0.85rem; color:var(--danger); background:rgba(239,68,68,0.08);
+                  border:1px solid rgba(239,68,68,0.2); border-radius:8px; padding:0.75rem 1rem;">
+      </div>
+    </div>
+
+    <!-- ── Results Column ───────────────────────────────────────────────── -->
+    <div class="col-lg-5">
+
+      <!-- Posture Tips (always visible) -->
+      <div class="card-pro mb-3">
+        <div class="card-label mb-3">Interview Posture Checklist</div>
+        <div class="feedback-item" style="border-bottom:1px solid var(--border);">
+          <div class="feedback-icon">🪑</div>
+          <span style="font-size:0.85rem;">Sit back fully in your chair, spine straight</span>
+        </div>
+        <div class="feedback-item" style="border-bottom:1px solid var(--border);">
+          <div class="feedback-icon">👁️</div>
+          <span style="font-size:0.85rem;">Camera at eye level — no looking down</span>
+        </div>
+        <div class="feedback-item" style="border-bottom:1px solid var(--border);">
+          <div class="feedback-icon">💪</div>
+          <span style="font-size:0.85rem;">Shoulders relaxed and level</span>
+        </div>
+        <div class="feedback-item">
+          <div class="feedback-icon">📐</div>
+          <span style="font-size:0.85rem;">Chin parallel to the ground</span>
+        </div>
+      </div>
+
+      <!-- ── Results Panel (shown after analysis) ──────────────────────── -->
+      <div id="results-panel" style="display:none;">
+        <div class="card-pro">
+          <div class="d-flex justify-between items-center mb-3">
+            <div class="card-label">Analysis Result</div>
+            <div id="result-status"></div>
+          </div>
+
+          <!-- Score ring -->
+          <div class="d-flex justify-center mb-3">
+            <div class="score-ring">
+              <svg viewBox="0 0 120 120" width="120" height="120">
+                <circle class="ring-bg"   cx="60" cy="60" r="50" stroke-width="10"/>
+                <circle id="score-ring-fill" class="ring-fill"
+                        cx="60" cy="60" r="50" stroke-width="10"
+                        stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+              </svg>
+              <div class="ring-label">
+                <span id="score-number" class="ring-number">—</span>
+                <span class="ring-text">/ 100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detection confidence -->
+          <div class="mb-3">
+            <div class="d-flex justify-between mb-1">
+              <span style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted);">
+                Detection Confidence
+              </span>
+              <span class="conf-label" style="font-size:0.72rem; color:var(--text-muted);"></span>
+            </div>
+            <div id="confidence-bar" class="progress-bar-pro">
+              <div class="bar-fill" style="width:0%;"></div>
+            </div>
+          </div>
+
+          <!-- Measured angles -->
+          <div class="card-label mb-2">Measured Angles</div>
+          <div class="angle-grid mb-3">
+            <div class="angle-item">
+              <div class="angle-val" id="angle-shoulder">—°</div>
+              <div class="angle-label">Shoulder Slope</div>
+            </div>
+            <div class="angle-item">
+              <div class="angle-val" id="angle-neck">—°</div>
+              <div class="angle-label">Neck Tilt</div>
+            </div>
+            <div class="angle-item">
+              <div class="angle-val" id="angle-head">—°</div>
+              <div class="angle-label">Head Tilt</div>
+            </div>
+            <div class="angle-item">
+              <div class="angle-val" id="angle-spine">—°</div>
+              <div class="angle-label">Spine Angle</div>
+            </div>
+          </div>
+
+          <!-- AI Feedback -->
+          <div class="card-label mb-2">Corrections &amp; Feedback</div>
+          <div id="feedback-list"></div>
+        </div>
+      </div>
+
+    </div><!-- /col -->
+  </div><!-- /row -->
+
+  <!-- ── Scoring Reference ───────────────────────────────────────────────── -->
+  <div class="card-pro mt-4">
+    <div class="card-label mb-3">Scoring Reference</div>
+    <div class="row g-3">
+      <div class="col-sm-6 col-md-3">
+        <div style="border-left:3px solid #10b981; padding-left:0.75rem;">
+          <div style="font-family:var(--font-display); font-weight:700; color:#10b981;">85–100</div>
+          <div style="font-size:0.8rem; color:var(--text-muted);">Excellent — interview ready</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <div style="border-left:3px solid #3b82f6; padding-left:0.75rem;">
+          <div style="font-family:var(--font-display); font-weight:700; color:#3b82f6;">65–84</div>
+          <div style="font-size:0.8rem; color:var(--text-muted);">Good — minor adjustments</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <div style="border-left:3px solid #f59e0b; padding-left:0.75rem;">
+          <div style="font-family:var(--font-display); font-weight:700; color:#f59e0b;">45–64</div>
+          <div style="font-size:0.8rem; color:var(--text-muted);">Needs Improvement</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <div style="border-left:3px solid #ef4444; padding-left:0.75rem;">
+          <div style="font-family:var(--font-display); font-weight:700; color:#ef4444;">0–44</div>
+          <div style="font-size:0.8rem; color:var(--text-muted);">Poor — significant corrections needed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+
+/* -- new block scripts for mock interview mode */
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => { startWebcam(); });
+
+  /* ── Mock Interview Mode ─────────────────────────────────────────────── */
+  let mockRunning  = false;
+  let mockScores   = [];
+  let mockInterval = null;
+  let mockCountdown= 60;
+
+  async function startMockSession() {
+    if (mockRunning) return;
+
+    if (!stream) {
+      showCamError('Please allow camera access first.');
+      return;
+    }
+
+    mockRunning   = true;
+    mockScores    = [];
+    mockCountdown = 60;
+
+    const btn    = document.getElementById('mock-btn');
+    const timer  = document.getElementById('mock-timer');
+    const result = document.getElementById('mock-result');
+
+    btn.disabled      = true;
+    btn.textContent   = '⏳ Session running…';
+    timer.style.display = 'inline-block';
+    result.style.display = 'none';
+
+    // Sample posture every 10 seconds
+    mockInterval = setInterval(async () => {
+      const imageData = captureFrame();
+      if (!imageData) return;
+
+      try {
+        const res  = await fetch('/detect_posture', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ image: imageData }),
+        });
+        const data = await res.json();
+        if (data.posture_score !== undefined) {
+          mockScores.push(data.posture_score);
+        }
+      } catch (e) { /* silent — keep session running */ }
+
+    }, 10000);
+
+    // Countdown ticker every second
+    const tick = setInterval(() => {
+      mockCountdown--;
+      const m = String(Math.floor(mockCountdown / 60)).padStart(2, '0');
+      const s = String(mockCountdown % 60).padStart(2, '0');
+      timer.textContent = `${m}:${s}`;
+
+      if (mockCountdown <= 0) {
+        clearInterval(tick);
+        clearInterval(mockInterval);
+        endMockSession(btn, timer, result);
+      }
+    }, 1000);
+  }
+
+  async function endMockSession(btn, timer, result) {
+    mockRunning = false;
+    timer.style.display = 'none';
+    btn.disabled      = false;
+    btn.textContent   = '▶ Start Mock Session';
+
+    if (mockScores.length === 0) {
+      result.style.color   = 'var(--danger)';
+      result.textContent   = 'No samples captured. Please ensure your camera is working.';
+      result.style.display = 'block';
+      return;
+    }
+
+    try {
+      const res  = await fetch('/mock_session', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ scores: mockScores }),
+      });
+      const data = await res.json();
+
+      result.style.color   = 'var(--success)';
+      result.textContent   = `✅ Session complete — Average score: ${data.avg_score}/100 (${data.status}). Saved to dashboard.`;
+      result.style.display = 'block';
+    } catch (e) {
+      result.style.color   = 'var(--danger)';
+      result.textContent   = 'Could not save session. Please try again.';
+      result.style.display = 'block';
+    }
+  }
+</script>
+{% endblock %}
